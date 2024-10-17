@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-const DataRow = ({ data }) => {
+const DataRow = ({ data, onEdit, onDelete }) => {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = date.getDate();
@@ -27,6 +27,7 @@ const DataRow = ({ data }) => {
             className="hover:text-teal-600"
             role="button"
             title="Edit Button"
+            onClick={() => onEdit(data)}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -45,7 +46,12 @@ const DataRow = ({ data }) => {
             </svg>
           </button>
 
-          <button className="hover:text-red-600" role="button" title="Delete">
+          <button
+            className="hover:text-red-600"
+            role="button"
+            title="Delete"
+            onClick={() => onDelete(data.id)}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="18"

@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import DataRow from "./DataRow";
 
-const Income = ({ income }) => {
+const Income = ({ income, onEdit, onDelete }) => {
   // console.log(income);
 
   return (
@@ -186,7 +186,12 @@ const Income = ({ income }) => {
         {/* <!-- Row --> */}
         {/* <!-- Row --> */}
         {income.map((data) => (
-          <DataRow key={data.id} data={data}></DataRow>
+          <DataRow
+            key={data.id}
+            onEdit={onEdit}
+            data={data}
+            onDelete={onDelete}
+          ></DataRow>
         ))}
       </div>
     </div>

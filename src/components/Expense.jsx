@@ -1,6 +1,7 @@
+/* eslint-disable react/prop-types */
 import DataRow from "./DataRow";
 
-const Expense = ({ expenses }) => {
+const Expense = ({ expenses, onEdit, onDelete }) => {
   return (
     <div className="border rounded-md">
       {/* <!-- Header --> */}
@@ -178,7 +179,12 @@ const Expense = ({ expenses }) => {
       <div className="p-4 divide-y">
         {/* <!-- Expense Row 1 --> */}
         {expenses.map((data) => (
-          <DataRow key={data.id} data={data} />
+          <DataRow
+            key={data.id}
+            data={data}
+            onEdit={onEdit}
+            onDelete={onDelete}
+          />
         ))}
       </div>
     </div>
