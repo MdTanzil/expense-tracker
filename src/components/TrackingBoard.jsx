@@ -60,8 +60,8 @@ const TrackingBoard = () => {
       setData(updatedData);
     }
   };
-  const income = data.filter((transaction) => transaction.type === "income");
-  const expenses = data.filter((transaction) => transaction.type === "expense");
+  let income = data.filter((transaction) => transaction.type === "income");
+  let expenses = data.filter((transaction) => transaction.type === "expense");
 
   const totalIncome = income.reduce((acc, item) => acc + item.amount, 0);
   const totalExpenses = expenses.reduce((acc, item) => acc + item.amount, 0);

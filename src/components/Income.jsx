@@ -1,8 +1,18 @@
 /* eslint-disable react/prop-types */
+import { useState } from "react";
+import { sortByAmount } from "../utils/sortData";
 import DataRow from "./DataRow";
 
 const Income = ({ income, onEdit, onDelete }) => {
   // console.log(income);
+  const [sortShow, setSortShow] = useState(false);
+
+  const [sortedIncome, setSortedIncome] = useState(income);
+  const handleSort = (order) => {
+    const sortedData = sortByAmount([...income], order);
+    setSortedIncome(sortedData);
+    setSortShow(!sortShow);
+  };
 
   return (
     <div className="border rounded-md relative">
@@ -37,7 +47,8 @@ const Income = ({ income, onEdit, onDelete }) => {
         </div>
         <div>
           {/* <!-- Sorting --> */}
-          {/* <div className="relative inline-block text-left">
+
+          <div className="relative inline-block text-left">
             <div>
               <button
                 type="button"
@@ -45,6 +56,7 @@ const Income = ({ income, onEdit, onDelete }) => {
                 id="menu-button"
                 aria-expanded="true"
                 aria-haspopup="true"
+                onClick={() => setSortShow(!sortShow)}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -67,36 +79,39 @@ const Income = ({ income, onEdit, onDelete }) => {
                 </svg>
               </button>
             </div>
-
-            <div
-              className="absolute z-10 mt-2 left-5 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-              role="menu"
-              aria-orientation="vertical"
-              aria-labelledby="menu-button"
-              tabIndex="-1"
-            >
-              <div className="py-1" role="none">
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-all"
-                  role="menuitem"
-                  tabIndex="-1"
-                  id="menu-item-0"
-                >
-                  Low to High
-                </a>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-all"
-                  role="menuitem"
-                  tabIndex="-1"
-                  id="menu-item-0"
-                >
-                  High to Low
-                </a>
+            {sortShow && (
+              <div
+                className="absolute z-10 mt-2 left-5 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                role="menu"
+                aria-orientation="vertical"
+                aria-labelledby="menu-button"
+                tabIndex="-1"
+              >
+                <div className="py-1" role="none">
+                  <button
+                    href="#"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-all"
+                    role="menuitem"
+                    tabIndex="-1"
+                    id="menu-item-0"
+                    onClick={() => handleSort("asc")}
+                  >
+                    Low to High
+                  </button>
+                  <button
+                    href="#"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-all"
+                    role="menuitem"
+                    tabIndex="-1"
+                    id="menu-item-0"
+                    onClick={() => handleSort("desc")}
+                  >
+                    High to Low
+                  </button>
+                </div>
               </div>
-            </div>
-          </div> */}
+            )}
+          </div>
 
           {/* <!-- Filtering --> */}
           {/* <div className="relative inline-block text-left">
@@ -185,7 +200,7 @@ const Income = ({ income, onEdit, onDelete }) => {
       <div className="p-4 divide-y">
         {/* <!-- Row --> */}
         {/* <!-- Row --> */}
-        {income.map((data) => (
+        {sortedIncome.map((data) => (
           <DataRow
             key={data.id}
             onEdit={onEdit}
