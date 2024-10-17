@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { transactions } from "../assets/demoData";
 import BalanceStat from "./BalanceStat";
+
 import Expense from "./Expense";
 import Income from "./Income";
 import SubmissionForm from "./SubmissionForm";
@@ -32,6 +33,12 @@ const TrackingBoard = () => {
     setAmount("");
     setDate("");
   };
+  const income = data.filter((transaction) => transaction.type === "income");
+  const expenses = data.filter((transaction) => transaction.type === "expense");
+
+  const totalIncome = income.reduce((acc, item) => acc + item.amount, 0);
+  const totalExpenses = expenses.reduce((acc, item) => acc + item.amount, 0);
+  const balance = totalIncome - totalExpenses;
   return (
     <>
       <SubmissionForm
@@ -46,10 +53,14 @@ const TrackingBoard = () => {
         setDate={setDate}
       />
       <div className="lg:col-span-2">
-        <BalanceStat />
+        <BalanceStat
+          totalIncome={totalIncome}
+          totalExpenses={totalExpenses}
+          balance={balance}
+        />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-8">
-          <Expense />
-          <Income />
+          <Income income={income} />
+          <Expense expenses={expenses} />
         </div>
       </div>
     </>
