@@ -1,16 +1,51 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { sortByAmount } from "../utils/sortData";
 import DataRow from "./DataRow";
 
 const Expense = ({ expenses, onEdit, onDelete }) => {
   const [sortShow, setSortShow] = useState(false);
   const [sortedExpense, setSortedExpenses] = useState(expenses);
+  const [isFilterShow, setISFilterShow] = useState(false);
+  const [selectedFilters, setSelectedFilters] = useState([]);
+  const [categories, setCategories] = useState([]);
   const handleSort = (order) => {
     const sortedData = sortByAmount([...expenses], order);
     setSortedExpenses(sortedData);
     setSortShow(!sortShow);
   };
+
+  //  unique categories extract from data
+  useEffect(() => {
+    const uniqueCategories = [
+      ...new Set(expenses.map((item) => item.category)),
+    ];
+    setCategories(uniqueCategories);
+  }, [expenses]);
+  // Function to handle filter changes
+  const handleFilterChange = (category) => {
+    if (selectedFilters.includes(category)) {
+      // If category is already selected, remove it
+      setSelectedFilters(selectedFilters.filter((item) => item !== category));
+    } else {
+      // Otherwise, add the category
+      setSelectedFilters([...selectedFilters, category]);
+    }
+  };
+
+  // Update sortedExpense when filters change
+  useEffect(() => {
+    const filterData = () => {
+      if (selectedFilters.length === 0) {
+        // If no filters are selected, show all data
+        return expenses;
+      }
+      // Filter data based on selected categories
+      return expenses.filter((item) => selectedFilters.includes(item.category));
+    };
+    setSortedExpenses(filterData());
+  }, [selectedFilters, expenses]);
+
   return (
     <div className="border rounded-md">
       {/* <!-- Header --> */}
@@ -114,14 +149,15 @@ const Expense = ({ expenses, onEdit, onDelete }) => {
           </div>
 
           {/* <!-- Filtering --> */}
-          {/* <div className="relative inline-block text-left">
+          <div className="relative inline-block text-left">
             <div>
               <button
                 type="button"
                 className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                id="filter-button-2"
+                id="filter-button"
                 aria-expanded="true"
                 aria-haspopup="true"
+                onClick={() => setISFilterShow(!isFilterShow)}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -148,43 +184,34 @@ const Expense = ({ expenses, onEdit, onDelete }) => {
                 </svg>
               </button>
             </div>
-
-            <div
-              className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-              role="menu"
-              aria-orientation="vertical"
-              aria-labelledby="filter-button-2"
-              tabIndex="-1"
-              id="filter-dropdown2"
-            >
-              <div className="py-1" role="none">
-                <label className="inline-flex items-center px-4 py-2 text-sm text-gray-700">
-                  <input
-                    type="checkbox"
-                    className="form-checkbox h-4 w-4 rounded-md text-gray-600"
-                    id="filter-option-1"
-                  />
-                  <span className="ml-2">Education</span>
-                </label>
-                <label className="inline-flex items-center px-4 py-2 text-sm text-gray-700">
-                  <input
-                    type="checkbox"
-                    className="form-checkbox h-4 w-4 rounded-md text-gray-600"
-                    id="filter-option-2"
-                  />
-                  <span className="ml-2">Food</span>
-                </label>
-                <label className="inline-flex items-center px-4 py-2 text-sm text-gray-700">
-                  <input
-                    type="checkbox"
-                    className="form-checkbox h-4 w-4 rounded-md text-gray-600"
-                    id="filter-option-3"
-                  />
-                  <span className="ml-2">Health</span>
-                </label>
+            {isFilterShow && (
+              <div
+                className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                role="menu"
+                aria-orientation="vertical"
+                aria-labelledby="filter-button"
+                tabIndex="-1"
+                id="filter-dropdown"
+              >
+                <div className="py-1" role="none">
+                  {categories.map((category) => (
+                    <label
+                      key={category}
+                      className="inline-flex items-center px-4 py-2 text-sm text-gray-700"
+                    >
+                      <input
+                        type="checkbox"
+                        className="form-checkbox h-4 w-4 rounded-md text-gray-600"
+                        id="filter-option-1"
+                        onChange={() => handleFilterChange(category)}
+                      />
+                      <span className="ml-2">{category}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
-            </div>
-          </div> */}
+            )}
+          </div>
         </div>
         {/* <!-- Sorting and Filtering Column Ends --> */}
       </div>
